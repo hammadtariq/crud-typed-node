@@ -8,11 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-var router = express.Router();
-exports.router = router;
-/* GET users listing. */
-router.get('/', (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-    res.send('respond with a resource');
-}));
-//# sourceMappingURL=users.js.map
+const mongodb_1 = require("mongodb");
+const model_1 = require("./model");
+const config = require('../../config');
+let DB;
+class Db {
+    connect() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!DB) {
+                DB = yield mongodb_1.MongoClient.connect(config.db.url);
+                this.ActiveJobs = new model_1.default(DB, 'activeJobs');
+            }
+        });
+    }
+}
+;
+const db = new Db();
+exports.default = db;
+//# sourceMappingURL=index.js.map

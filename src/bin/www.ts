@@ -5,6 +5,7 @@
  */
 
 import app from '../app';
+import db from '../db';
 const debug = require('debug')('myapp:server');
 const https = require('https');
 const fs = require('fs');
@@ -30,9 +31,16 @@ const server = https.createServer(options, app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+db.connect()
+  .then(() => {
+    console.error('db connected!');
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  })
+  .catch((err) => {
+    console.error('Error in connecting db', err);
+  });
 
 /**
  * Normalize a port into a number, string, or false.
