@@ -4,13 +4,15 @@ import * as csrf from 'csurf';
 import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+const passport = require('passport')
+const router = express.Router();
 
 // const csrf = require('csurf');
 const path = require('path');
 const favicon = require('serve-favicon');
 
 import { router as index } from './routes/index';
-import { router as users } from './routes/users';
+import user from './routes/user.route';
 
 const app = express();
 
@@ -44,8 +46,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+
+// Bootstrap passport config
+require('../config/passport')(passport);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', index);
-app.use('/users', users);
+app.use('/users', user(router, passport));
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -33,7 +33,6 @@ const server = https.createServer(options, app);
 
 db.connect()
   .then(() => {
-    console.error('db connected!');
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);

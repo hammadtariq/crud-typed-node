@@ -1,18 +1,19 @@
-import { MongoClient } from 'mongodb';
-import Model from './model';
 const config = require('../../config');
-let DB;
+const Mongoose = require('mongoose');
+let db;
 
 class Db {
-	ActiveJobs: Model;
 
 	async connect() {
-		if (!DB) {
-			DB = await MongoClient.connect(config.db.url);
-			this.ActiveJobs = new Model(DB, 'activeJobs');
+		if (!db) {
+			Mongoose.connect(config.db.url);
+			db = await Mongoose.connection;
+			db.on('error', console.error.bind(console, 'connection error'));
+			db.once('open', function callback() {
+				console.log('database connected');
+			});
 		}
 	}
 };
 
-const db = new Db();
-export default db;
+export default new Db();

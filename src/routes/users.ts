@@ -1,10 +1,15 @@
 import * as express from 'express';
-var router = express.Router();
 import db from '../db';
+import UserController from '../controllers/user.controller';
+const User = new UserController();
 
-/* GET users listing. */
-router.get('/', async (req, res, next) => {
-  res.send('respond with a resource');
-});
+export default (router, passport) => {
+  /**Declare all routes file */
+  router.post('/login',
+    passport.authenticate('local', {
+    }), User.login);
+  router.post('/create', User.create);
+  router.get('/logout', User.logout);
 
-export { router };
+  return router;
+};

@@ -8,21 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongodb_1 = require("mongodb");
-const model_1 = require("./model");
 const config = require('../../config');
-let DB;
+const Mongoose = require('mongoose');
+let db;
 class Db {
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!DB) {
-                DB = yield mongodb_1.MongoClient.connect(config.db.url);
-                this.ActiveJobs = new model_1.default(DB, 'activeJobs');
+            if (!db) {
+                Mongoose.connect(config.db.url);
+                db = yield Mongoose.connection;
+                db.on('error', console.error.bind(console, 'connection error'));
+                db.once('open', function callback() {
+                    console.log('database connected');
+                });
             }
         });
     }
 }
 ;
-const db = new Db();
-exports.default = db;
+exports.default = new Db();
 //# sourceMappingURL=index.js.map

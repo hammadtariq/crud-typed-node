@@ -6,11 +6,13 @@ const csrf = require("csurf");
 const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const passport = require('passport');
+const router = express.Router();
 // const csrf = require('csurf');
 const path = require('path');
 const favicon = require('serve-favicon');
 const index_1 = require("./routes/index");
-const users_1 = require("./routes/users");
+const user_route_1 = require("./routes/user.route");
 const app = express();
 app.use(session({
     secret: 'My super session secret',
@@ -36,8 +38,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
+// Bootstrap passport config
+require('../config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/', index_1.router);
-app.use('/users', users_1.router);
+app.use('/users', user_route_1.default(router, passport));
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     const err = new Error('Not Found');

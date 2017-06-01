@@ -24,7 +24,6 @@ const server = https.createServer(options, app_1.default);
  */
 db_1.default.connect()
     .then(() => {
-    console.error('db connected!');
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);
